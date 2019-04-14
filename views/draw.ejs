@@ -20,6 +20,7 @@
                         <input class="w3-input w3-animate-input w3-hover-shadow"
                                type="text"
                                id="label"
+                               required
                                placeholder="label"
                                name="label">
                     </label>
@@ -117,11 +118,23 @@
 
     function submitImage() {
         let text = $("#label")[0].value.trim();
+        if (text === ""){
+            $("#label").focus();
+            return
+        }
         $.post("/draw", {
             label: text,
             data: JSON.stringify(data)
         });
+        clearInput();
+        resetCanvas();
     }
+
+    $(document).on('keypress', function (e) {
+        if(e.which === 13){
+            submitImage();
+        }
+    })
 </script>
 </body>
 <%- include('footer') %>
