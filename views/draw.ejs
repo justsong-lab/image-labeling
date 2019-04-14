@@ -1,0 +1,127 @@
+<%- include('header') %>
+<body onload="init()">
+<div class="w3-content" style="max-width:800px">
+    <div class="w3-row">
+        <div class="w3-card-4 w3-margin w3-col" style="width: 400px !important;">
+            <div class="w3-container w3-deep-purple">
+                <span onclick="resetCanvas()" class="w3-bar-item w3-button w3-hover-red w3-xlarge w3-right">×</span>
+            </div>
+            <div style="height: 400px !important;">
+                <canvas id="canvas" width="400" height="400"></canvas>
+            </div>
+        </div>
+        <div class="w3-card-4 w3-margin w3-col" style="width: 250px !important;">
+            <div class="w3-container w3-deep-orange">
+                <h3>Info</h3>
+            </div>
+            <div class="w3-container w3-center">
+                <div>
+                    <label>
+                        <input class="w3-input w3-animate-input w3-hover-shadow"
+                               type="text"
+                               id="label"
+                               placeholder="label"
+                               name="label">
+                    </label>
+                    <div class="w3-section">
+                        <input type="reset" value="Clear" class="w3-button w3-red" onclick="clearInput()">
+                        <input type="submit" value="Submit" class="w3-button w3-green" onclick="submitImage()">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const CANVAS_COL = 20;
+    const CANVAS_ROW = 20;
+    const GRID_WIDTH = 20;
+    const GRID_HEIGHT = 20;
+    document.getElementById("canvas").setAttribute("width", (CANVAS_COL * GRID_WIDTH).toString());
+    document.getElementById("canvas").setAttribute("height", (CANVAS_ROW * GRID_HEIGHT).toString());
+    const LINE_COLOR = "#ffffff";
+    const PEN_COLOR = "#ffffff";
+    const CANVAS_COLOR = "#000000";
+    let data = [];
+    let isDrawing = false;
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    function init() {
+        canvas.onmousemove = function (e) {
+            onMouseMove(e)
+        }.bind();
+        canvas.onmousedown = function (e) {
+            onMouseDown(e)
+        }.bind();
+        canvas.onmouseup = function (e) {
+            onMouseUp(e)
+        }.bind();
+
+        resetCanvas();
+    }
+
+    function onMouseMove(e) {
+        if (isDrawing) {
+            fillSquare(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+        }
+    }
+
+    function onMouseDown(e) {
+        isDrawing = true;
+        fillSquare(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+    }
+
+    function onMouseUp() {
+        isDrawing = false;
+    }
+
+    function resetCanvas() {
+        data = [];
+        let dataSize = CANVAS_COL * CANVAS_ROW;
+        while (dataSize--) data.push(0);
+        ctx.fillStyle = CANVAS_COLOR;
+        ctx.fillRect(0, 0, CANVAS_COL * GRID_WIDTH, CANVAS_ROW * GRID_HEIGHT);
+        drawGrid();
+    }
+
+    function drawGrid() {
+        for (let col = GRID_WIDTH; col <= GRID_WIDTH * CANVAS_COL; col += GRID_WIDTH) {
+            ctx.strokeStyle = LINE_COLOR;
+            ctx.beginPath();
+            ctx.moveTo(col, 0);
+            ctx.lineTo(col, GRID_HEIGHT * CANVAS_ROW);
+            ctx.stroke()
+        }
+        for (let row = GRID_HEIGHT; row <= GRID_HEIGHT * CANVAS_ROW; row += GRID_HEIGHT) {
+            ctx.strokeStyle = LINE_COLOR;
+            ctx.beginPath();
+            ctx.moveTo(0, row);
+            ctx.lineTo(GRID_WIDTH * CANVAS_COL, row);
+            ctx.stroke()
+        }
+    }
+
+    function fillSquare(x, y) {
+        const col = Math.floor(x / GRID_WIDTH);
+        const row = Math.floor(y / GRID_HEIGHT);
+        data[row * CANVAS_COL + col] = 1;
+        ctx.fillStyle = PEN_COLOR;
+        ctx.fillRect(col * GRID_WIDTH, row * GRID_HEIGHT, GRID_WIDTH, GRID_HEIGHT);
+    }
+
+    function clearInput() {
+        $("#label")[0].value = "";
+    }
+
+    function submitImage() {
+        let text = $("#label")[0].value.trim();
+        $.post("/draw", {
+            label: text,
+            data: JSON.stringify(data)
+        });
+    }
+</script>
+</body>
+<%- include('footer') %>
