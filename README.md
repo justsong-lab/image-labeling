@@ -9,6 +9,11 @@
 + Based on Node.js
 + Image data and labels are stored in data.csv
 
+## TODO
+- [ ] Allow users to select different data sets to contribute
+- [ ] For digital type images, press the number keys to quickly submit the data.
+- [ ] Allow users to view their own history and tasks to be completed
+
 ## Screenshots
 **Draw page**
 ![draw](annex/draw.png)
