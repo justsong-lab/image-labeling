@@ -2,7 +2,7 @@
 + `node --version === "v10.14.2"`
 + `npm install`
 + `npm start`
-+ Open [http://localhost:8080](http://localhost:8080) in your browser
++ Open [http://localhost:8888](http://localhost:8888) in your browser
 
 ## Description
 + Online image labeling tool for machine learning research
@@ -10,9 +10,11 @@
 + Image data and labels are stored in data.csv
 
 ## TODO
-- [ ] Allow users to select different data sets to contribute
+- [ ] Allow users to select different data sets to contribute.
 - [ ] For digital type images, press the number keys to quickly submit the data.
-- [ ] Allow users to view their own history and tasks to be completed
+- [ ] Allow users to view their own history and tasks to be completed.
+- [ ] Allow users to view existing data as images. 
+- [ ] Refactoring projects with Vue.js
 
 ## Screenshots
 **Draw page**
